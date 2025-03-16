@@ -4,15 +4,9 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "drug_applications")
 public class DrugApplication {
@@ -22,5 +16,31 @@ public class DrugApplication {
     private String substanceName;
     @ElementCollection
     private List<String> productNumbers;
+
+    public DrugApplication() {
+    }
+
+    public DrugApplication(String applicationNumber, String manufacturerName, String substanceName, List<String> productNumbers) {
+        this.applicationNumber = applicationNumber;
+        this.manufacturerName = manufacturerName;
+        this.substanceName = substanceName;
+        this.productNumbers = productNumbers;
+    }
+
+    public String getApplicationNumber() {
+        return this.applicationNumber;
+    }
+
+    public String getManufacturerName() {
+        return this.manufacturerName;
+    }
+
+    public String getSubstanceName() {
+        return this.substanceName;
+    }
+
+    public List<String> getProductNumbers() {
+        return this.productNumbers;
+    }
 }
 
