@@ -141,7 +141,7 @@ GET http://localhost:8080/drugs/applications/search?manufacturer=Renew Pharmaceu
 
 ### 3. Retrieve Stored Applications (Paginated)
 
-**GET** `/drugs/applications/stored?page=0&size=10`
+**GET** `/drugs/applications/?page=0&size=10`
 
 ## Running Tests
 

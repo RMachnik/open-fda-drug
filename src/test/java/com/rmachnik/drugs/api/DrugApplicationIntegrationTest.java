@@ -32,7 +32,7 @@ class DrugApplicationIntegrationTest {
     @Sql(scripts = "/test-data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
         // Load test data
     void testGetStoredDrugs() throws Exception {
-        mockMvc.perform(get("/drugs/applications/stored")
+        mockMvc.perform(get("/drugs/applications/")
                         .param("page", "0")
                         .param("size", "10"))
                 .andExpect(status().isOk())

@@ -2,6 +2,7 @@ package com.rmachnik.drugs.application;
 
 import com.rmachnik.drugs.domain.DrugApplication;
 import com.rmachnik.drugs.domain.repository.DrugApplicationRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,8 +13,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,8 +32,14 @@ class DrugApplicationServiceTest {
     @Mock
     private DrugApplicationRepository repository;
 
+
     @InjectMocks
     private DrugApplicationService service;
+
+    @BeforeEach
+    void setUp() {
+        ReflectionTestUtils.setField(service, "fdaUrl", "https://api.fda.gov");
+    }
 
     @Test
     void testSearchDrugs() {
@@ -38,7 +47,7 @@ class DrugApplicationServiceTest {
         String brand = "INDOCYANINE GREEN";
         int limit = 10;
         int skip = 0;
-        String url = "https://api.fda.gov/drug/drugsfda.json?search=manufacturer_name:" + manufacturer + "+brand_name:" + brand + "&limit=" + limit + "&skip=" + skip;
+        URI url = URI.create("https://api.fda.gov/drug/drugsfda.json?search=manufacturer_name:Renew%20Pharmaceuticals+brand_name:INDOCYANINE%20GREEN&limit=10&skip=0");
 
         when(restTemplate.getForEntity(url, String.class)).thenReturn(ResponseEntity.ok().body(
                 """

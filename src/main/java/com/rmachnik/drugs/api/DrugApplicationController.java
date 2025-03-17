@@ -85,7 +85,7 @@ public class DrugApplicationController {
     }
 
     @Operation(summary = "Get stored drug applications", description = "Retrieve paginated stored drug applications")
-    @GetMapping("/stored")
+    @GetMapping("/")
     public Page<DrugApplicationDTO> getStoredDrugs(Pageable pageable) {
         return service.getAllStoredApplications(pageable).map(DrugApplicationController::toDto);
     }

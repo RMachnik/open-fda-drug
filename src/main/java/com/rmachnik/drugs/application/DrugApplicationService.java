@@ -8,13 +8,16 @@ import com.rmachnik.drugs.domain.DrugApplication;
 import com.rmachnik.drugs.domain.repository.DrugApplicationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,21 +28,29 @@ public class DrugApplicationService {
 
     private final RestTemplate restTemplate;
     private final DrugApplicationRepository repository;
+    private final String fdaUrl;
 
-    public DrugApplicationService(RestTemplate restTemplate, DrugApplicationRepository repository) {
+    public DrugApplicationService(RestTemplate restTemplate, DrugApplicationRepository repository, @Value("${fda.url}") String fdaUrl) {
         this.restTemplate = restTemplate;
         this.repository = repository;
+        this.fdaUrl = fdaUrl;
     }
 
     public List<DrugApplication> searchDrugs(String manufacturer, String brand, int limit, int skip) {
         log.info("Searching drugs for manufacturer: {}, brand: {}, limit: {}, skip: {}", manufacturer, brand, limit, skip);
-        String url = "https://api.fda.gov/drug/drugsfda.json?search=manufacturer_name:" + manufacturer;
+        UriComponentsBuilder url = UriComponentsBuilder.fromUriString(fdaUrl)
+                .path("/drug/drugsfda.json");
+        String searchParams = "manufacturer_name:" + manufacturer;
         if (brand != null && !brand.isEmpty()) {
-            url += "+brand_name:" + brand;
+            searchParams += "+brand_name:" + brand;
         }
-        url += "&limit=" + limit + "&skip=" + skip;
+        url.queryParam("search", searchParams)
+                .queryParam("limit", limit)
+                .queryParam("skip", skip);
         try {
-            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            URI uri = url.build().encode().toUri();
+            log.info("Calling FDA API with URL: {}", uri);
+            ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode json = objectMapper.readTree(response.getBody());
             JsonNode resultsJson = json.get("results");
