@@ -60,10 +60,10 @@ public class DrugApplicationController {
     public List<DrugApplicationDTO> searchDrugs(
             @RequestParam @NotBlank(message = "Manufacturer is required") String manufacturer,
             @RequestParam(required = false) String brand,
-            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "0") int page) {
 
-        List<DrugApplicationDTO> results = service.searchDrugs(manufacturer, brand, pageSize, pageSize * page).stream()
+        List<DrugApplicationDTO> results = service.searchDrugs(manufacturer, brand, size, size * page).stream()
                 .map(DrugApplicationController::toDto)
                 .toList();
         if (results.isEmpty()) {
