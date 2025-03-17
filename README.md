@@ -110,23 +110,23 @@ Examples:
 
 ### 1. Search Drug Applications
 
-**GET** `/drugs/search`
+**GET** `/drugs/applications/search`
 
 - **Query Parameters:**
     - `manufacturer` (required) - Manufacturer name
     - `brand` (optional) - Brand name
-    - `limit` (optional, default: 10) - Number of records per page
-    - `skip` (optional, default: 0) - Number of records to skip
+  - `size` (optional, default: 10) - Number of records per page
+  - `page` (optional, default: 0) - Page number
 
 **Example:**
 
 ```
-GET http://localhost:8080/drugs/search?manufacturer=Renew Pharmaceuticals
+GET http://localhost:8080/drugs/applications/search?manufacturer=Renew Pharmaceuticals
 ```
 
 ### 2. Store Drug Application
 
-**POST** `/drugs/save`
+**POST** `/drugs/applications/`
 
 - **Request Body:**
 
@@ -141,7 +141,7 @@ GET http://localhost:8080/drugs/search?manufacturer=Renew Pharmaceuticals
 
 ### 3. Retrieve Stored Applications (Paginated)
 
-**GET** `/drugs/stored?page=0&size=10`
+**GET** `/drugs/applications/stored?page=0&size=10`
 
 ## Running Tests
 

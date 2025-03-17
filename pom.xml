@@ -6,13 +6,13 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.4.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>com.rmachnik</groupId>
     <artifactId>drugs</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>drugs</name>
-    <description>FDA based drugs API</description>
+    <description>FDA based drugs applications API</description>
     <properties>
         <java.version>23</java.version>
         <springfox-swagger-ui.version>3.0.0</springfox-swagger-ui.version>

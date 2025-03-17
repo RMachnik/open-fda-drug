@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Drug Applications", description = "APIs for searching and storing FDA drug applications. All endpoints may return a 404 if no data is found or if the endpoint is invalid.")
 @RestController
 @Validated
-@RequestMapping("/drugs")
-@Tag(name = "Drug Applications", description = "APIs for searching and storing FDA drug applications. All endpoints may return a 404 if no data is found or if the endpoint is invalid.")
+@RequestMapping("/drugs/applications")
 public class DrugApplicationController {
     private final DrugApplicationService service;
 
@@ -49,7 +49,6 @@ public class DrugApplicationController {
         );
     }
 
-    @GetMapping("/search")
     @Operation(summary = "Search FDA drug applications by manufacturer",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successful search"),
@@ -57,13 +56,14 @@ public class DrugApplicationController {
                             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
+    @GetMapping("/search")
     public List<DrugApplicationDTO> searchDrugs(
             @RequestParam @NotBlank(message = "Manufacturer is required") String manufacturer,
             @RequestParam(required = false) String brand,
-            @RequestParam(defaultValue = "10") int limit,
-            @RequestParam(defaultValue = "0") int skip) {
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "0") int page) {
 
-        List<DrugApplicationDTO> results = service.searchDrugs(manufacturer, brand, limit, skip).stream()
+        List<DrugApplicationDTO> results = service.searchDrugs(manufacturer, brand, pageSize, pageSize * page).stream()
                 .map(DrugApplicationController::toDto)
                 .toList();
         if (results.isEmpty()) {
@@ -73,7 +73,7 @@ public class DrugApplicationController {
     }
 
     @Operation(summary = "Save a drug application", description = "Store a drug application in the database")
-    @PostMapping("/save")
+    @PostMapping("/")
     public ResponseEntity<DrugApplicationDTO> saveDrug(@Valid @RequestBody DrugApplicationDTO dto) {
         DrugApplication drugApplication = toDrugApplication(dto);
 
@@ -84,8 +84,8 @@ public class DrugApplicationController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @GetMapping("/stored")
     @Operation(summary = "Get stored drug applications", description = "Retrieve paginated stored drug applications")
+    @GetMapping("/stored")
     public Page<DrugApplicationDTO> getStoredDrugs(Pageable pageable) {
         return service.getAllStoredApplications(pageable).map(DrugApplicationController::toDto);
     }

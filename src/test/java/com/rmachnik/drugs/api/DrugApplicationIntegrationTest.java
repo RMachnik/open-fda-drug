@@ -32,7 +32,7 @@ class DrugApplicationIntegrationTest {
     @Sql(scripts = "/test-data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
         // Load test data
     void testGetStoredDrugs() throws Exception {
-        mockMvc.perform(get("/drugs/stored")
+        mockMvc.perform(get("/drugs/applications/stored")
                         .param("page", "0")
                         .param("size", "10"))
                 .andExpect(status().isOk())
@@ -41,7 +41,7 @@ class DrugApplicationIntegrationTest {
 
     @Test
     void testSearchDrugsWithEmptyParam() throws Exception {
-        mockMvc.perform(get("/drugs/search")
+        mockMvc.perform(get("/drugs/applications/search")
                         .param("manufacturer", "")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -52,7 +52,7 @@ class DrugApplicationIntegrationTest {
     void testSearchDrugsNotFound() throws Exception {
         String manufacturer = "Unknown Manufacturer";
 
-        mockMvc.perform(get("/drugs/search")
+        mockMvc.perform(get("/drugs/applications/search")
                         .param("manufacturer", manufacturer)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -70,7 +70,7 @@ class DrugApplicationIntegrationTest {
     void testSaveDrugApplication_ValidationFailure() throws Exception {
         DrugApplicationDTO invalidDto = new DrugApplicationDTO("", "", "", Collections.emptyList());
 
-        mockMvc.perform(post("/drugs/save")
+        mockMvc.perform(post("/drugs/applications/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
                 .andExpect(status().isBadRequest())
@@ -84,7 +84,7 @@ class DrugApplicationIntegrationTest {
     void testSaveDrug() throws Exception {
         DrugApplicationDTO drugApplicationDto = new DrugApplicationDTO("ANDA040811", "Renew Pharmaceuticals", "INDOCYANINE GREEN", List.of("73624-424", "70100-424"));
 
-        mockMvc.perform(post("/drugs/save")
+        mockMvc.perform(post("/drugs/applications/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(drugApplicationDto)))
                 .andExpect(status().isOk())

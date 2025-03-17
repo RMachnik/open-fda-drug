@@ -32,6 +32,7 @@ public class DrugApplicationService {
     }
 
     public List<DrugApplication> searchDrugs(String manufacturer, String brand, int limit, int skip) {
+        log.info("Searching drugs for manufacturer: {}, brand: {}, limit: {}, skip: {}", manufacturer, brand, limit, skip);
         String url = "https://api.fda.gov/drug/drugsfda.json?search=manufacturer_name:" + manufacturer;
         if (brand != null && !brand.isEmpty()) {
             url += "+brand_name:" + brand;
@@ -55,8 +56,8 @@ public class DrugApplicationService {
         String applicationNumber = (String) result.get("application_number");
         List<String> manufacturerNames = (List<String>) ((Map<String, Object>) result.get("openfda")).get("manufacturer_name");
         List<String> productNumbers = (List<String>) ((Map<String, Object>) result.get("openfda")).get("product_ndc");
-        String manufacturerName = manufacturerNames != null && !manufacturerNames.isEmpty() ? manufacturerNames.get(0) : "Unknown";
-        String substanceName = ((List<String>) ((Map<String, Object>) result.get("openfda")).get("generic_name")).get(0);
+        String manufacturerName = manufacturerNames != null && !manufacturerNames.isEmpty() ? manufacturerNames.getFirst() : "Unknown";
+        String substanceName = ((List<String>) ((Map<String, Object>) result.get("openfda")).get("generic_name")).getFirst();
 
         return new DrugApplication(applicationNumber, manufacturerName, substanceName, productNumbers);
     }
